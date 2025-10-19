@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proses JavaScript - TI USU</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: white;
+    color: black;
+    padding: 20px;
+  }
+
+  .dark-mode {
+    background-color: #121212;
+    color: white;
+  }
+
+  button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  #cardContainer {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .card {
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    padding: 15px;
+    width: 200px;
+    position: relative;
+    transition: 0.3s;
+  }
+
+  .dark-mode .card {
+    background-color: #333;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+  }
+
+  /* Popup Form */
+  #popupForm {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .form-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+  }
+
+  .form-content input {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+  }
+
+  .close-form {
+    background-color: red;
+  }
+
+  .dark-mode .form-content {
+    background-color: #222;
+    color: white;
+  }
+
+</style>
+</head>
+<body>
+
+<h2>Proses JavaScript</h2>
+
+<!-- Tombol-Tombol -->
+<button id="modeButton" onclick="toggleMode()">Mode Malam</button>
+<button onclick="addCard()">Tambah Card</button>
+<button onclick="openForm()">Tampilkan Form</button>
+<button onclick="cekKOM()">Cari KOM Mahasiswa</button>
+
+<!-- Container Card -->
+<div id="cardContainer"></div>
+
+<!-- Popup Form -->
+<div id="popupForm">
+  <div class="form-content">
+    <h3>Form Input Data</h3>
+    <label>Nama:</label>
+    <input type="text" placeholder="Masukkan nama...">
+    <label>Email:</label>
+    <input type="text" placeholder="Masukkan email...">
+    <button class="close-form" onclick="closeForm()">Tutup</button>
+  </div>
+</div>
+
+<script>
+  // ====== 1. Mode Malam / Mode Pagi ======
+  let darkMode = false;
+  function toggleMode() {
+    darkMode = !darkMode;
+    document.body.classList.toggle("dark-mode", darkMode);
+    const modeButton = document.getElementById("modeButton");
+    if (darkMode) {
+      modeButton.textContent = "Mode Pagi";
+    } else {
+      modeButton.textContent = "Mode Malam";
+    }
+  }
+
+  // ====== 2. Tambah & Hapus Card ======
+  function addCard() {
+    const container = document.getElementById("cardContainer");
+    const card = document.createElement("div");
+    card.className = "card";
+    const currentCount = container.children.length + 1; 
+
+    card.innerHTML = `
+      <span class="close-btn" onclick="removeCard(this)">×</span>
+      <h4>Card ${currentCount}</h4>
+      <p>Ini adalah card ke-${currentCount}.</p>
+    `;
+
+    container.appendChild(card);
+    updateCardNumbers();
+  }
+
+  function removeCard(element) {
+    element.parentElement.remove();
+    updateCardNumbers();
+  }
+
+  function updateCardNumbers() {
+    const cards = document.querySelectorAll(".card");
+    cards.forEach((card, index) => {
+      card.querySelector("h4").textContent = `Card ${index + 1}`;
+      card.querySelector("p").textContent = `Ini adalah card ke-${index + 1}.`;
+    });
+  }
+
+  // ====== 3. Popup Form ======
+  function openForm() {
+    document.getElementById("popupForm").style.display = "flex";
+  }
+
+  function closeForm() {
+    document.getElementById("popupForm").style.display = "none";
+  }
+
+  // ====== 4. Sistem Pembaca KOM Berdasarkan NIM ======
+  function cekKOM() {
+    let nim = prompt("Masukkan NIM Mahasiswa TI:");
+
+    if (!nim) {
+      alert("Anda belum memasukkan NIM.");
+      return;
+    }
+
+    const nimNum = parseInt(nim);
+    if (isNaN(nimNum) || nimNum < 251402001 || nimNum > 251402135) {
+      alert("NIM tidak valid");
+      return;
+    }
+
+    // Urutan KOM A, B, C berulang
+    const index = (nimNum - 251402001) % 3;
+    let kom;
+
+    if (index === 0) kom = "KOM A";
+    else if (index === 1) kom = "KOM B";
+    else kom = "KOM C";
+
+    alert(`NIM ${nim} berada di ${kom}.`);
+  }
+</script>
+
+</body>
+</html>
